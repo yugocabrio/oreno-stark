@@ -134,6 +134,40 @@ impl Polynomial {
             self.coefficients.pop();
         }
     }
+
+    pub fn poly_pow(&self, exponent: u32, field_prime: &BigUint) -> Result<Self, &'static str> {
+        let mut result = Polynomial::new(vec![FieldElement::one(field_prime)]);
+        let mut base = self.clone();
+        let mut exp = exponent;
+
+        while exp > 0 {
+            if exp % 2 == 1 {
+                result = result.poly_mul(&base)?;
+            }
+            base = base.poly_mul(&base)?;
+            exp /= 2;
+        }
+
+        Ok(result)
+    }
+
+    pub fn monomial(degree: usize, coefficient: FieldElement) -> Self {
+        let mut coefficients = vec![FieldElement::zero(&coefficient.prime); degree];
+        coefficients.push(coefficient);
+        Polynomial::new(coefficients)
+    }
+
+    pub fn is_zero(&self) -> bool {
+        self.coefficients.iter().all(|coeff| coeff.is_zero())
+    }
+
+    pub fn degree(&self) -> usize {
+        let mut degree = self.coefficients.len();
+        while degree > 0 && self.coefficients[degree - 1].is_zero() {
+            degree -= 1;
+        }
+        degree.saturating_sub(1)
+    }
 }
 
 // Evaluate polynomial.
@@ -155,6 +189,14 @@ pub fn evaluate_polynomial_at_points(coefficients: &[FieldElement], points: &[Fi
         evaluations.push(eval);
     }
     Ok(evaluations)
+}
+
+use std::convert::From;
+
+impl From<Vec<FieldElement>> for Polynomial {
+    fn from(coefficients: Vec<FieldElement>) -> Self {
+        Polynomial::new(coefficients)
+    }
 }
 
 #[cfg(test)]

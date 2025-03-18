@@ -186,7 +186,7 @@ pub fn fri_verify(
     x: &FieldElement,
     field_prime: &BigUint,
 ) -> bool {
-    println!("--- FRI Verification ---");
+    println!("FRI Verification");
     let mut current_x = x.clone();
 
     for (i, step_query) in decommitment.step_queries.iter().enumerate() {
@@ -299,7 +299,8 @@ mod tests {
         let coefficients = vec![
             FieldElement::new(1u32.into(), prime.clone()).unwrap(),
             FieldElement::new(15u32.into(), prime.clone()).unwrap(),
-            FieldElement::new(10u32.into(), prime.clone()).unwrap(),
+            // FieldElement::new(10u32.into(), prime.clone()).unwrap(),
+            FieldElement::new(0u32.into(), prime.clone()).unwrap(),
             FieldElement::new(15u32.into(), prime.clone()).unwrap(),
         ];
         let p0 = Polynomial::new(coefficients);
@@ -328,7 +329,7 @@ mod tests {
         let commitment = fri_commit(&p0, &d0, &r_values);
 
         // P0(x), x = 10
-        let x = FieldElement::new(10u32.into(), prime.clone()).unwrap();
+        let x = FieldElement::new(11u32.into(), prime.clone()).unwrap();
         println!("Selected x: {:?}", x.num);
         let decommitment = fri_decommit(&commitment, &x);
 

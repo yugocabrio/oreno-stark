@@ -1,5 +1,5 @@
 use num_bigint::BigUint;
-use num_traits::{Zero, one};
+use num_traits::{Zero, One};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct FieldElement {
@@ -88,6 +88,20 @@ impl FieldElement {
     // Check if the number is zero or not.
     pub fn is_zero(&self) -> bool {
         self.num.is_zero()
+    }
+
+    pub fn zero(prime: &BigUint) -> Self {
+        FieldElement {
+            num: BigUint::zero(),
+            prime: prime.clone(),
+        }
+    }
+
+    pub fn one(prime: &BigUint) -> Self {
+        FieldElement {
+            num: BigUint::one(),
+            prime: prime.clone(),
+        }
     }
 }
 
